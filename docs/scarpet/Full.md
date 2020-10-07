@@ -1,20 +1,16 @@
-# Fundamental components of `scarpet` programming language.
+# `Scarpet` 编程语言的基本组成
 
-Scarpet (a.k.a. Carpet Script, or Script for Carpet) is a programming language 
-designed to provide the ability to write custom programs to run within Minecraft 
-and interact with the world.
+Scarpet (又名 Carpet 脚本) 是一个旨在Minecraft中编写自定义程序、能与世界交互的编程语言。
 
-This specification is divided into two sections: this one is agnostic to any 
-Minecraft related features and could function on its own, and CarpetExpression 
-for Minecraft specific routines and world manipulation functions.
+这份规范分为两个部分：第一部分是与Minecraft无关，能够单独运行；也可以结合CarpetExpression，操纵Minecraft。
 
-# Synopsis
+# 总览
 
 <pre>
 script run print('Hello World!')
 </pre>
 
-or an OVERLY complex example:
+这里还有一个相当复杂的示例：
 
 <pre>
 /script run
@@ -53,34 +49,32 @@ or an OVERLY complex example:
 /script invoke check_area_around_closest_player_for_block 'diamond_ore'
 </pre>
 
-or simply
+或者，只是简简单单地运行
 
 <pre>
 /script run print('There is '+for(rect(x,9,z,8,8,8), _ == 'diamond_ore')+' diamond ore around you')
 </pre>
 
-It definitely pays to check what higher level `scarpet` functions have to offer.
+检索并使用`scarpet`提供的高级功能绝对是值得的。
 
-# Programs
+# 程序
 
-You can think of an program like a mathematical expression, like `"2.4*sin(45)/(2-4)"` or `"sin(y)>0 & max(z, 3)>3"`.
-Writing a program, is like writing a `2+3`, just a bit longer.
+可以把一个程序看作一个数学表达式，例如`"2.4*sin(45)/(2-4)"` 或 `"sin(y)>0 & max(z, 3)>3"`。
+编写程序就像书写`2+3`一样简单，只不过稍稍长了一点而已。
 
-## Basic language components
+## 语言的基本组件
 
-Programs consist of constants, like `2`, `3.14`, `pi`, or `'foo'`, operators like `+`, `/`, `->`, variables which you 
-can define, like `foo` or special ones that will be defined for you, like `_x`, or `_` , which I specific to a each
-built in function, and functions with name, and arguments in the form of `f(a,b,c)`, where `f` is the function name,
-and `a, b, c` are the arguments which can be any other expression. And that's all the parts of the language, so all
-in all - sounds quite simple.
+程序里可以包含变量，比如`2`, `3.14`, `pi`, 或 `'foo'`；也可以包含运算符，例如`+`, `/`, `->`；可以自由定义的变量，比如`foo`；或者是特殊的变量，比如`_x`, or `_`，是针对每个内置的函数专门定义的，举个例子：`f(a,b,c)`中，`f`是函数名，`a, b, c`是可以为其他表达式的参数。  
+这门语言的所有部分都已经介绍完了，全部——总之，听起来很简单。
 
-## Code flow
+## 代码流
+
 
 Like any other proper programming language, `scarpet` needs brackets, basically to identify where stuff begins and 
 where it ends. In the languages that uses much more complicated constructs, like Java, they tend to use all sort of 
 them, round ones to indicate function calls, curly to indicate section of code, square to access lists, pointy for 
-generic types etc... I mean - there is no etc, cause they have exhausted all the bracket options...
-
+generic types etc... I mean - there is no etc, cause they have exhausted all the bracket options..
+就像大部分其他的编程语言一样，`scarpet`需要括号，用于识别东西从哪里开始、到哪里结束。在有些结构要复杂得多的语言里，比如Java，倾向于使用各种各样的括号：圆括号表示函数调用，花括号表示代码片段，
 `Scarpet` is different, since it runs everything based on functions (although its not per se a functional 
 language like lisp) only needs the round brackets for everything, and it is up to the programmer to organize 
 its code so its readable, as adding more brackets does not have any effect on the performance of the programs 
