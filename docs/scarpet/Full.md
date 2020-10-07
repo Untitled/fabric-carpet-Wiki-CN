@@ -1,20 +1,16 @@
-# Fundamental components of `scarpet` programming language.
+# `Scarpet` 编程语言的基本组成
 
-Scarpet (a.k.a. Carpet Script, or Script for Carpet) is a programming language 
-designed to provide the ability to write custom programs to run within Minecraft 
-and interact with the world.
+Scarpet (又名 Carpet 脚本) 是一个旨在Minecraft中编写自定义程序、能与世界交互的编程语言。
 
-This specification is divided into two sections: this one is agnostic to any 
-Minecraft related features and could function on its own, and CarpetExpression 
-for Minecraft specific routines and world manipulation functions.
+这份规范分为两个部分：第一部分是与Minecraft无关，能够单独运行；也可以结合CarpetExpression，操纵Minecraft。
 
-# Synopsis
+# 总览
 
 <pre>
 script run print('Hello World!')
 </pre>
 
-or an OVERLY complex example:
+这里还有一个相当复杂的示例：
 
 <pre>
 /script run
@@ -53,44 +49,34 @@ or an OVERLY complex example:
 /script invoke check_area_around_closest_player_for_block 'diamond_ore'
 </pre>
 
-or simply
+或者，只是简简单单地运行
 
 <pre>
 /script run print('There is '+for(rect(x,9,z,8,8,8), _ == 'diamond_ore')+' diamond ore around you')
 </pre>
 
-It definitely pays to check what higher level `scarpet` functions have to offer.
+检索并使用`scarpet`提供的高级功能绝对是值得的。
 
-# Programs
+# 程序
 
-You can think of an program like a mathematical expression, like `"2.4*sin(45)/(2-4)"` or `"sin(y)>0 & max(z, 3)>3"`.
-Writing a program, is like writing a `2+3`, just a bit longer.
+可以把一个程序看作一个数学表达式，例如`"2.4*sin(45)/(2-4)"` 或 `"sin(y)>0 & max(z, 3)>3"`。
+编写程序就像书写`2+3`一样简单，只不过稍稍长了一点而已。
 
-## Basic language components
+## 语言的基本组件
 
-Programs consist of constants, like `2`, `3.14`, `pi`, or `'foo'`, operators like `+`, `/`, `->`, variables which you 
-can define, like `foo` or special ones that will be defined for you, like `_x`, or `_` , which I specific to a each
-built in function, and functions with name, and arguments in the form of `f(a,b,c)`, where `f` is the function name,
-and `a, b, c` are the arguments which can be any other expression. And that's all the parts of the language, so all
-in all - sounds quite simple.
+程序里可以包含变量，比如`2`, `3.14`, `pi`, 或 `'foo'`；也可以包含运算符，例如`+`, `/`, `->`；可以自由定义的变量，比如`foo`；或者是特殊的变量，比如`_x`, or `_`，是针对每个内置的函数专门定义的，举个例子：`f(a,b,c)`中，`f`是函数名，`a, b, c`是可以为其他表达式的参数。  
+这门语言的所有部分都已经介绍完了，全部——总之，听起来很简单。
 
-## Code flow
+## 代码流
 
-Like any other proper programming language, `scarpet` needs brackets, basically to identify where stuff begins and 
-where it ends. In the languages that uses much more complicated constructs, like Java, they tend to use all sort of 
-them, round ones to indicate function calls, curly to indicate section of code, square to access lists, pointy for 
-generic types etc... I mean - there is no etc, cause they have exhausted all the bracket options...
-
-`Scarpet` is different, since it runs everything based on functions (although its not per se a functional 
-language like lisp) only needs the round brackets for everything, and it is up to the programmer to organize 
-its code so its readable, as adding more brackets does not have any effect on the performance of the programs 
-as they are compiled before they are executed. Look at the following example usage of `if()` function:
+就像大部分其他的编程语言一样，`scarpet`需要括号，用于识别东西从哪里开始、到哪里结束。在有些结构要复杂得多的语言里，比如Java，倾向于使用各种各样的括号：圆括号表示函数调用，花括号表示代码片段，方括号用于访问列表，尖括号用于泛型等…不，没有等，因为他们已经用尽了所有的括号选项。  
+但`scarpet`不一样。它的一切都是基于函数的（尽管它和Lisp这样的功能语言不尽相同），一切都只需要使用圆括号，而且代码的组织方式也取决于程序员，使其更具可读性，因为程序是先编译的，增加圆括号并不会对其性能造成任何影响。来看看下面的if()函数示例吧：
 
 <pre>
 if(x&lt;y+6,set(x,8+y,z,'air');plop(x,top('surface',x,z),z,'birch'),sin(query(player(),'yaw'))&gt;0.5,plop(0,0,0,'boulder'),particle('fire',x,y,z))
 </pre>
 
-Would you prefer to read
+你会更喜欢阅读
 
 <pre>
 if(   x&lt;y+6,
@@ -102,7 +88,7 @@ if(   x&lt;y+6,
 )
 </pre>
 
-Or rather:
+还是下面的代码？
 
 <pre>
 if
@@ -121,27 +107,16 @@ if
 )
 </pre>
 
-Whichever style you prefer it doesn't matter. It typically depends on the situation and the complexity of the 
-subcomponents. No matter how many whitespaces and extra brackets you add - the code will evaluate to exactly the 
-same expression, and will run exactly the same, so make sure your programs are nice and clean so others don't 
-have problems with them
+无论喜欢哪种风格都没关系，它通常取决于具体情境和代码复杂度。不论加上多少空格或者多余的括号 — 代码都将计算相同的表达式，并且会完全相同地运行。因此请确保您的程序看起来简洁良好，使他人没有阅读障碍。
 
-## Functions and scoping
+## 函数和作用域
 
-Users can define functions in the form `fun(args....) -> expression` and they are compiled and saved for further 
-execution in this, but also subsequent calls of /script command, added to events, etc. Functions can also be
- assigned to variables, 
-passed as arguments, called with `call('fun', args...)` function, but in most cases you would want to 
-call them directly by 
-name, in the form of `fun(args...)`. This means that once defined functions are saved with the world for 
-further use. For variables, there are two types of them, global - which are shared anywhere in the code, 
-and those are all which name starts with 'global_', and local variables which is everything else and those 
-are only visible inside each function. This also means that all the parameters in functions are 
-passed 'by value', not 'by reference'.
+用户可以使用这样的格式来定义一个函数：`fun(args....) -> expression`，它们编译后会保存，以备调用。此后也可以随时通过/script命令、绑定到事件等方式调用函数。函数也可以被赋值到变量里、作为另一个函数的参数、通过`call('fun', args...)`的格式调用，但大多数情况下你可能只想用`call('fun', args...)的格式`直接调用它们。函数一经定义就会保存在世界中以供将来调用。对于变量，它们分为两类：全局变量 — 在代码各处都可以使用，名称均以'global_'开头；局部变量 — 存放其余的东西，只在函数内部可见。这也意味着函数的参数是“传值调用”，而非“传址调用”。
 
-## Outer variables
+## 外部变量
 
-Functions can still 'borrow' variables from the outer scope, by adding them to the function signature wrapped 
+函数也可以从外部空间“借来”变量
+Functions can still 'borrow' variables from the outer scope, by adding them to the function signature wrappe
 around built-in function `outer`. It adds the specified value to the function call stack so they behave exactly 
 like capturing lambdas in Java, but unlike java captured variables don't need to be final. Scarpet will just 
 attach their new values at the time of the function definition, even if they change later. Most value will be 
